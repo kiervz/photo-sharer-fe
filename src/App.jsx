@@ -1,10 +1,20 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Content from './layouts/Content';
+
+import Navbar from './layouts/Navbar';
+import Feed from './pages/feed/Feed';
 
 const App = () => {
   return (
-    <>
-      <p className='text-3xl text-green-600'>Hello, React!</p>
-    </>
+    <BrowserRouter>
+      <Navbar />
+      <Content>
+        <Routes>
+          <Route path='/' element={<Feed />} />
+        </Routes>
+      </Content>
+    </BrowserRouter>
   );
 };
 
