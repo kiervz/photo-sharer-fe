@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
 import axios from 'axios';
+import { Button, Input } from '../../components';
 
 const CreatePost = () => {
   const [wrongImageType, setWrongImageType] = useState(false);
   const [image, setImage] = useState(null);
   const [catFact, setCatFact] = useState('');
   const [showSave, setShowSave] = useState(false);
+  const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
 
   const handleUploadImage = (e) => {
     const selectedFile = e.target.files[0];
@@ -26,14 +28,16 @@ const CreatePost = () => {
   };
   
   const generateCatFact = async () => {
+    setIsLoadingGenerate(true);
     try {
       const { data } = await axios.get('https://catfact.ninja/fact');
       setCatFact(data.fact);
       animateText(data.fact);
+      console.log(catFact);
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
-    }
+    } finally { setIsLoadingGenerate(false); }
   };
 
   const animateText = (catFact) => {
@@ -107,26 +111,26 @@ const CreatePost = () => {
           <p className="block text-md font-medium text-gray-900">
           Generate some cat facts
           </p>
-          <button 
+          <Input type='text' className='h-10 border rounded-lg' />
+          <Button 
             type="button" 
             className="text-gray-900 bg-white hover:bg-gray-100 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
             onClick={generateCatFact}
-          >
-            <BiRefresh className='text-xl mr-1'/> 
-            Generate
-          </button>
+            btnIcon={<BiRefresh className='text-xl mr-1'/> }
+            btnText='Generate'
+            loading={isLoadingGenerate}
+          />
         </div>
         <p id="message" className='border p-2 rounded-lg min-h-[30%]'></p>
         { showSave &&
         <div className='text-right mt-4'>
-          <button 
+          <Button 
             type="button" 
             className="text-white bg-red-600 hover:bg-red-700 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
             onClick={handleSave}
-          >
-            <BiSave className='text-xl mr-1'/> 
-            SAVE
-          </button>
+            btnIcon={<BiSave className='text-xl mr-1'/>}
+            btnText='SAVE'
+          />
         </div> }
       </div>
     </div>
