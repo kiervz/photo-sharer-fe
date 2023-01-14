@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Pin = ({ id, description, photo }) => {
+const Pin = ({ id, description, photo, total_votes }) => {
   return (
     <div className='mt-2 mb-10'>
       <div className='relative w-auto rounded-lg overflow-hidden transition-all duration-500 ease-in-out m-3'>
@@ -12,7 +12,7 @@ const Pin = ({ id, description, photo }) => {
           <p>{ description }</p>
           <div className='flex flex-col items-center justify-center p-1'>
             <p>+</p>
-            <p>24</p>
+            <p>{ total_votes }</p>
             <p>-</p>
           </div>
         </div>
