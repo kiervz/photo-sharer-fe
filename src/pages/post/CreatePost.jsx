@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
+import axios from 'axios';
 
 const CreatePost = () => {
   const [wrongImageType, setWrongImageType] = useState(false);
@@ -23,15 +24,24 @@ const CreatePost = () => {
   const handleSave = () => {
     console.log('save');
   };
+  
+  const generateCatFact = async () => {
+    try {
+      const { data } = await axios.get('https://catfact.ninja/fact');
+      setCatFact(data.fact);
+      animateText(data.fact);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
 
-  const generateCatFact = () => {
+  const animateText = (catFact) => {
     let messageText = document.getElementById('message');
     messageText.innerText = '';
-    let generatedText = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit hic perspiciatis nam porro deserunt odio quam tenetur natus expedita recusandae esse earum praesentium dolorem enim, magnam tempore consectetur ratione doloribus?Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit hic perspiciatis nam porro deserunt odio quam tenetur natus expedita recusandae esse earum praesentium dolorem enim, magnam tempore consectetur ratione doloribus?Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit hic perspiciatis nam porro deserunt odio quam tenetur natus expedita recusandae esse earum praesentium dolorem enim, magnam tempore consectetur ratione doloribus?Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit hic perspiciatis nam porro deserunt odio quam tenetur natus expedita recusandae esse earum praesentium dolorem enim, magnam tempore consectetur ratione doloribus?Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit hic perspiciatis nam porro deserunt odio quam tenetur natus expedita recusandae esse earum praesentium dolorem enim, magnam tempore consectetur ratione doloribus?';
+
     let delay = 200;
-    let splittedMessage = generatedText.split(' ');
-    
-    setCatFact(generatedText);
+    let splittedMessage = catFact.split(' ');
     
     for (const [index, value] of splittedMessage.entries()) {
       setTimeout(function() {
