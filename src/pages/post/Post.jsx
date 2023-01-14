@@ -12,7 +12,7 @@ const Post = ({ id, description, photo, total_votes, comments }) => {
         </Link>
         <div className='p-2'>
           <div className='flex items-center text-center justify-between'>
-            <div className='flex justify-center gap-2'>
+            <div className='flex justify-center gap-2 pt-3 pb-2 h-6 text-center items-center'>
               <BiUpvote 
                 className='text-2xl cursor-pointer hover:text-red-500' 
               />
