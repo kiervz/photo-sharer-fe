@@ -4,14 +4,14 @@ import axios from '../../config/AxiosClient';
 
 const Feed = () => {
   const [loading, setLoading] = useState(false);
-  const [pins, setPins] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   const fetchPosts = async () => {
     setLoading(true);
     try {
       const { data } = await axios.get('/api/v1/posts?sort=highest-votes&paginate=10');
   
-      setPins(data.response.data);
+      setPosts(data.response.data);
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
@@ -27,7 +27,7 @@ const Feed = () => {
       { loading ? 
         'Loading...' 
         : 
-        pins && <MasonryLayout pins={pins} />
+        posts && <MasonryLayout posts={posts} />
       }
     </>
   );
