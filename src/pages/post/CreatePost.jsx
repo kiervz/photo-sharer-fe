@@ -5,6 +5,7 @@ import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
 import { Button, Input, PreviewImage } from '../../components';
 import { useFormik } from 'formik';
 import { initialValues, schema } from '../../validations/post';
+import { notifyUser } from '../../utility';
 
 const CreatePost = () => {
   const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
@@ -55,10 +56,11 @@ const CreatePost = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      console.log(data);
+      if (data.code === 201) notifyUser('success', 'Post successfully created!');
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
+      if (err.response.status === 401) notifyUser('error', 'Please login before making a post.');
     }
   };
   return (
