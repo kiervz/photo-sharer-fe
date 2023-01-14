@@ -11,14 +11,19 @@
     "lint-fix": "eslint src/**/*.{js,jsx} --fix"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.2",
     "formik": "^2.2.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-masonry-css": "^1.0.16",
+    "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.2",
     "react-toastify": "^9.1.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.4.1",
+    "redux-persist": "^6.0.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
