@@ -1,39 +1,28 @@
 import React, { useState } from 'react';
-import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
 import axios from 'axios';
-import { Button, Input } from '../../components';
+import axiosClient from '../../config/AxiosClient';
+import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
+import { Button, Input, PreviewImage } from '../../components';
+import { useFormik } from 'formik';
+import { initialValues, schema } from '../../validations/post';
 
 const CreatePost = () => {
-  const [wrongImageType, setWrongImageType] = useState(false);
-  const [image, setImage] = useState(null);
-  const [catFact, setCatFact] = useState('');
-  const [showSave, setShowSave] = useState(false);
   const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
 
-  const handleUploadImage = (e) => {
-    const selectedFile = e.target.files[0];
-    const fileSizeKiloBytes = selectedFile.size / 1024;
-    console.log(fileSizeKiloBytes);
-
-    if (selectedFile.type === 'image/png' || selectedFile.type === 'image/jpg' || selectedFile.type === 'image/jpeg') {
-      setWrongImageType(false);
-      setImage(URL.createObjectURL(e.target.files[0]));
-    } else {
-      setWrongImageType(true);
+  const { values, errors, handleSubmit, handleChange, setFieldValue } = useFormik({
+    initialValues,
+    validationSchema: schema,
+    onSubmit: (values) => {
+      handleSave(values);
     }
-  };
-
-  const handleSave = () => {
-    console.log('save');
-  };
+  });
   
   const generateCatFact = async () => {
     setIsLoadingGenerate(true);
     try {
       const { data } = await axios.get('https://catfact.ninja/fact');
-      setCatFact(data.fact);
+      setFieldValue('description', data.fact);
       animateText(data.fact);
-      console.log(catFact);
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
@@ -52,38 +41,51 @@ const CreatePost = () => {
         messageText.innerText += ' ' + value;
       }, delay * index);
     }
-
-    setShowSave(true);
   };
+  
+  const handleSave = async (values) => {
+    let formData = new FormData();
 
+    formData.append('description', values.description);
+    formData.append('photo', values.photo);
+
+    try {
+      const { data } = await axiosClient.post('/api/v1/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(data);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
   return (
-    <div className='flex flex-col sm:flex-row justify-center content-center'>
+    <form 
+      className='flex flex-col sm:flex-row justify-center content-center' 
+      onSubmit={handleSubmit} 
+    >
       <div className="w-full sm:w-[508px] max-w-full pt-5">
         <div 
-          className='relative border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100'
+          className={`relative border-2 ${errors.photo ? 'border-red-600' : 'border-gray-300'} border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100`}
         >
-          { wrongImageType && 
-            <p className='text-md text-red-600 text-center z-0'>
-              It&apos;s wrong file type.
-            </p> }
-          { image ? 
+          { errors.photo && <p className='text-center text-red-600 text-sm'>{ errors.photo }</p> }
+          { values.photo ? 
             <div className='z-10'>
-              <img
-                src={image}
-                alt="uploaded-pic"
-                className="p-2"
+              <PreviewImage
+                file={values.photo}
               />
-              <button
+              <Button
                 type="button"
                 className="absolute bottom-3 right-3 p-3 rounded-full bg-white text-xl cursor-pointer outline-none hover:shadow-md hover:bg-gray-100 transition-all duration-500 ease-in-out"
-                onClick={() => setImage(null)}
-              >
-                <BiTrash />
-              </button>
+                btnIcon={<BiTrash />}
+                onClick={() => setFieldValue('photo', '')}
+              />
             </div>
             : 
             <label 
-              htmlFor="dropzone-file" 
+              htmlFor="photo" 
               className="flex flex-col items-center justify-center w-full cursor-pointer z-20"
             >
               <div className="flex flex-col items-center justify-center py-6">
@@ -98,10 +100,11 @@ const CreatePost = () => {
                 </p>
               </div>
               <input 
-                id="dropzone-file" 
+                id="photo" 
                 type="file" 
                 className="hidden" 
-                onChange={handleUploadImage}
+                value={values.photo}
+                onChange={(e) => setFieldValue('photo', e.target.files[0])}
               />
             </label> }
         </div>
@@ -111,7 +114,6 @@ const CreatePost = () => {
           <p className="block text-md font-medium text-gray-900">
           Generate some cat facts
           </p>
-          <Input type='text' className='h-10 border rounded-lg' />
           <Button 
             type="button" 
             className="text-gray-900 bg-white hover:bg-gray-100 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
@@ -121,19 +123,30 @@ const CreatePost = () => {
             loading={isLoadingGenerate}
           />
         </div>
-        <p id="message" className='border p-2 rounded-lg min-h-[30%]'></p>
-        { showSave &&
+        <p 
+          id="message" 
+          className={`border p-2 rounded-lg min-h-[30%] ${ errors.description ? 'border-2 border-red-600': 'border-gray-300'}`}
+        >
+          { errors.description && errors.description }
+        </p>
+        <Input 
+          id='description'
+          name='description'
+          className='hidden'
+          type='text' 
+          value={values.description}
+          onChange={handleChange}
+        />
         <div className='text-right mt-4'>
           <Button 
-            type="button" 
+            type='submit'
             className="text-white bg-red-600 hover:bg-red-700 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
-            onClick={handleSave}
             btnIcon={<BiSave className='text-xl mr-1'/>}
             btnText='SAVE'
           />
-        </div> }
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
 
