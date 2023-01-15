@@ -59,6 +59,14 @@ const Feed = () => {
     }
   };
 
+  const handleTotalVotes = (id, total_votes) => {
+    setPosts([
+      ...posts.map(comment => (
+        comment.id === id ? { ...comment, total_votes} : comment
+      ))
+    ]);
+  };
+  
   useEffect(() => {
     fetchPosts();
   }, [currentPage]);
@@ -73,6 +81,7 @@ const Feed = () => {
             <MasonryLayout 
               posts={posts} 
               handleDelete={handleDelete}
+              handleTotalVotes={handleTotalVotes}
             />
             <div className='flex justify-center pt-8'>
               { currentPage !== meta?.totalPages 

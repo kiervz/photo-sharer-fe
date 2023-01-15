@@ -1,13 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { BiDownvote, BiUpvote, BiCommentDetail } from 'react-icons/bi';
-import { HiDotsVertical, HiOutlineExclamationCircle, HiOutlinePencilAlt, HiOutlineTrash } from 'react-icons/hi';
+import { notifyUser } from '../../utility/MessageHelper';
+import { BiCommentDetail } from 'react-icons/bi';
+import { 
+  BsHandThumbsDown, 
+  BsHandThumbsDownFill, 
+  BsHandThumbsUp, 
+  BsHandThumbsUpFill 
+} from 'react-icons/bs';
+import { 
+  HiDotsVertical, 
+  HiOutlineExclamationCircle, 
+  HiOutlinePencilAlt, 
+  HiOutlineTrash 
+} from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useSelector } from 'react-redux';
 import { Button, Modal } from 'flowbite-react';
 
 import UserIcon from '../../assets/images/user.png';
+import axios from '../../config/AxiosClient';
 
 const Post = ({ 
   id, 
@@ -16,23 +29,63 @@ const Post = ({
   photo, 
   total_votes, 
   comments,
-  handleDelete
+  votes,
+  handleDelete,
+  handleTotalVotes
 }) => {
   let kebabRef = useRef();
   const userState = useSelector(state => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [voteStatus, setVoteStatus] = useState(0);
 
   const handleDeletePost = () => {
     handleDelete(id);
   };
+  
+  const voteUp = async () => {
+    try {
+      const { data } = await axios.post(`/api/v1/votes/${id}/up`);
+
+      handleTotalVotes(id, data.response.total_votes);
+      setVoteStatus(data.response.status);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+      if (err.response.status === 401) {
+        notifyUser('error', 'Please login before voting.');
+      }
+    } 
+  };
+
+  const voteDown = async () => {
+    try {
+      const { data } = await axios.post(`/api/v1/votes/${id}/down`);
+
+      handleTotalVotes(id, data.response.total_votes);
+      setVoteStatus(data.response.status);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+      if (err.response.status === 401) {
+        notifyUser('error', 'Please login before voting.');
+      }
+    } 
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', (e) => {
       if (!kebabRef?.current?.contains(e.target)) {
         setIsOpen(false);
       }
-    });
+    }); 
   });
+
+  useEffect(() => {
+    if (votes?.length > 0) {
+      setVoteStatus(votes[0].vote);
+    }
+  }, []);
 
   return (
     <div className='mt-2 mb-10'>
@@ -49,7 +102,7 @@ const Post = ({
                 onClick={() => setIsOpen(!isOpen)}
               />
               <div className={`${!isOpen && 'hidden'} bg-white py-2 rounded-lg mt-2 absolute right-0 top-[50%] w-48 shadow-xl border z-50`}>
-                <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
                   <Link 
                     to={`/post/${id}/edit`}
                     className="cursor-pointer px-4 py-2 text-black hover:bg-gray-100 flex gap-2 justify-start items-center"
@@ -109,13 +162,27 @@ const Post = ({
         <div className='p-2'>
           <div className='flex items-center text-center justify-between'>
             <div className='flex justify-center gap-2 pt-3 pb-2 h-6 text-center items-center'>
-              <BiUpvote 
-                className='text-2xl cursor-pointer hover:text-red-500' 
-              />
+              { voteStatus === 1 ?
+                <BsHandThumbsUpFill 
+                  color={voteStatus === 1 ? 'red' : ''}
+                  className='text-2xl cursor-pointer'
+                  onClick={voteUp}
+                /> : 
+                <BsHandThumbsUp 
+                  className='text-2xl cursor-pointer hover:text-red-500'
+                  onClick={voteUp}
+                /> }
               <p className='text-lg font-semibold cursor-default'>{ total_votes }</p>
-              <BiDownvote 
-                className='text-2xl cursor-pointer hover:text-gray-500' 
-              />
+
+              { voteStatus === -1 ?
+                <BsHandThumbsDownFill 
+                  className={`text-2xl cursor-pointer ${voteStatus === -1 ? 'text-blue-500' : ''}`}
+                  onClick={voteDown}
+                /> : 
+                <BsHandThumbsDown 
+                  className='text-2xl cursor-pointer hover:text-blue-500'
+                  onClick={voteDown}
+                /> }
             </div>
             <Link to={`/post/${id}`} className='flex items-center text-center justify-between gap-2 hover:text-blue-500'>
               <p className='text-lg font-semibold'>{ comments.total }</p>

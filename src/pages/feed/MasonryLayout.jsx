@@ -9,7 +9,7 @@ const breakPointsObj = {
   500: 1
 };
 
-const MasonryLayout = ({ posts, handleDelete }) => {
+const MasonryLayout = ({ posts, handleDelete, handleTotalVotes }) => {
   return (
     <Masonry 
       className='flex animate-slide-fwd' 
@@ -18,6 +18,7 @@ const MasonryLayout = ({ posts, handleDelete }) => {
       { posts?.map(post => (
         <Post 
           handleDelete={handleDelete}
+          handleTotalVotes={handleTotalVotes}
           key={post.id} 
           {...post} 
           className="w-max" 

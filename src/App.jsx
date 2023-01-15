@@ -9,6 +9,7 @@ import CreatePost from './pages/post/CreatePost';
 import PostDetail from './pages/post/PostDetail';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import Logout from './pages/auth/Logout';
 import Missing from './pages/missing/Missing';
 import EditPost from './pages/post/EditPost';
 
@@ -23,11 +24,12 @@ const App = () => {
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
           </Route>
-          <Route path='/' element={<Feed />} />
+          <Route path='/logout' element={<Logout />} />
           <Route path='/post/:id' element={<PostDetail />} />
 
           {/* Protect these routes  */}
           <Route element={<RequireAuth />}>
+            <Route path='/' element={<Feed />} />
             <Route path='/create' element={<CreatePost />} />
             <Route path='/post/:id/edit' element={<EditPost />} />
           </Route>    
