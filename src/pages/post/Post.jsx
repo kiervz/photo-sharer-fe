@@ -29,6 +29,7 @@ const Post = ({
   photo, 
   total_votes, 
   comments,
+  votes,
   handleDelete,
   handleTotalVotes
 }) => {
@@ -77,8 +78,14 @@ const Post = ({
       if (!kebabRef?.current?.contains(e.target)) {
         setIsOpen(false);
       }
-    });
+    }); 
   });
+
+  useEffect(() => {
+    if (votes?.length > 0) {
+      setVoteStatus(votes[0].vote);
+    }
+  }, []);
 
   return (
     <div className='mt-2 mb-10'>

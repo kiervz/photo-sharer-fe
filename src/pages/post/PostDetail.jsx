@@ -33,6 +33,7 @@ const PostDetail = () => {
   
       setPost(data.response);
       setComments(data.response.comments.data);
+      setVoteStatus(data.response.votes[0].vote);
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
