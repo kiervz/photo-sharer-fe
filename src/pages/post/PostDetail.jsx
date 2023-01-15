@@ -4,10 +4,11 @@ import { BiDownvote, BiUpvote } from 'react-icons/bi';
 import UserIcon from '../../assets/images/user.png';
 import axios from '../../config/AxiosClient';
 import Comment from './Comment';
+import { SkeletonPost } from '../../components';
 
 const PostDetail = () => {
   const params = useParams();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({});
 
   const fetchPost = async () => {
@@ -31,7 +32,7 @@ const PostDetail = () => {
   return (
     <>
       { loading ?
-        'Loading...'
+        <SkeletonPost />
         :
         <div className='flex flex-col sm:flex-row justify-center content-center'>
           <div className="w-full sm:w-[508px] max-w-full">
