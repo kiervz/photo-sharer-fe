@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import axiosClient from '../../config/AxiosClient';
-import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
+import { BiCloudUpload, BiTrash, BiRefresh } from 'react-icons/bi';
 import { Button, Input, PreviewImage } from '../../components';
 import { useFormik } from 'formik';
 import { initialValues, schema } from '../../validations/post';
@@ -9,6 +9,7 @@ import { notifyUser } from '../../utility';
 
 const CreatePost = () => {
   const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { values, errors, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues,
@@ -45,6 +46,7 @@ const CreatePost = () => {
   };
   
   const handleSave = async (values) => {
+    setIsLoading(true);
     let formData = new FormData();
 
     formData.append('description', values.description);
@@ -61,7 +63,7 @@ const CreatePost = () => {
       const error = err.response?.data?.message;
       console.log(error);
       if (err.response.status === 401) notifyUser('error', 'Please login before making a post.');
-    }
+    } finally { setIsLoading(false); }
   };
   return (
     <form 
@@ -143,8 +145,8 @@ const CreatePost = () => {
           <Button 
             type='submit'
             className="text-white bg-red-600 hover:bg-red-700 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
-            btnIcon={<BiSave className='text-xl mr-1'/>}
-            btnText='SAVE'
+            loading={isLoading}
+            btnText='POST'
           />
         </div>
       </div>

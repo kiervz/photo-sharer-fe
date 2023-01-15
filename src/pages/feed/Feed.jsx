@@ -43,6 +43,21 @@ const Feed = () => {
       setIsLoadingButton(true);
     }
   };
+  
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/v1/posts/${id}`);
+
+      setPosts([
+        ...posts.filter(post => {
+          return post.id !== id;
+        })
+      ]);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -55,7 +70,10 @@ const Feed = () => {
         : 
         posts.length > 0 ?
           <>
-            <MasonryLayout posts={posts} />
+            <MasonryLayout 
+              posts={posts} 
+              handleDelete={handleDelete}
+            />
             <div className='flex justify-center pt-8'>
               { currentPage !== meta?.totalPages 
                 && 

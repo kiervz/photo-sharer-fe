@@ -13,6 +13,7 @@ const CommentItem = ({
   id, 
   user, 
   text, 
+  created_at,
   handleDeleteComment, 
   handleUpdateComment, 
   isLoadingComment 
@@ -39,7 +40,7 @@ const CommentItem = ({
   });
   
   return (
-    <div className='mt-5'>
+    <div className='mt-7'>
       <div className='flex justify-start gap-2 mb-2'>
         <img 
           src={UserIcon} 
@@ -48,7 +49,11 @@ const CommentItem = ({
         />
         <div className='w-full' ref={kebabRef}>
           <div className='flex justify-between items-center relative'>
-            <p className='text-sm font-semibold cursor-pointer h-6 mt-1 w-max'>{ user.name }</p>
+            <div className='flex justify-start items-center gap-2'>
+              <p className='text-sm font-semibold cursor-pointer h-6 mt-1 w-max'>{ user.name }</p>
+              <small className='text-gray-900' style={{fontSize:'10px', lineHeight: '20px'}}>•</small>
+              <small className='text-gray-500 text-sm'>{ created_at }</small>
+            </div>
             { user.id === userState.data.id && 
               <>
                 <HiDotsVertical 
@@ -62,7 +67,7 @@ const CommentItem = ({
                         className="cursor-pointer px-4 py-2 text-black hover:bg-gray-100 flex gap-2 justify-start items-center"
                       > 
                         <HiOutlinePencilAlt size={20} />
-                        Update
+                        Edit
                       </p>
                     </li>
                     <li onClick={handleDelete}>
@@ -87,7 +92,7 @@ const CommentItem = ({
                       htmlFor="updateMessage" 
                       className="block mb-2 text-sm font-medium text-gray-900"
                     >
-                        Update comment
+                      Update comment
                     </label>
                     <textarea 
                       id="updateMessage" 

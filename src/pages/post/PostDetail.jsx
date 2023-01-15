@@ -49,7 +49,8 @@ const PostDetail = () => {
           id: newComment.id,
           post_id: newComment.post_id,
           text: newComment.text,
-          user: {...newComment.user}
+          user: {...newComment.user},
+          created_at: newComment.created_at
         }
       ]);
     } catch (err) {
