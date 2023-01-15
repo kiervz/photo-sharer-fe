@@ -1,34 +1,74 @@
 import React, { useEffect, useState } from 'react';
 import MasonryLayout from './MasonryLayout';
 import axios from '../../config/AxiosClient';
+import { Button } from '../../components';
 
 const Feed = () => {
-  const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [meta, setMeta] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [fromLoadMore, setFromLoadMore] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
 
   const fetchPosts = async () => {
-    setLoading(true);
+    if (!fromLoadMore) {
+      setLoading(true);
+    }
+
     try {
-      const { data } = await axios.get('/api/v1/posts?sort=latest&paginate=10');
+      const { data } = await axios.get(`/api/v1/posts?page=${currentPage}&sort=latest&paginate=10`);
   
-      setPosts(data.response.data);
+      if (fromLoadMore) {
+        setPosts(prev => [...prev, ...data.response.data]);
+      } else {
+        setPosts(data.response.data);
+      }
+
+      setMeta(data.response.meta);
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
-    } finally { setLoading(false); }
+    } finally {
+      setFromLoadMore(false);
+      setLoading(false);
+      setIsLoadingButton(false);
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (Number(meta?.page) < Number(meta?.totalPages)) {
+      setCurrentPage(prev => prev + 1);
+      setFromLoadMore(true);
+      setIsLoadingButton(true);
+    }
   };
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [currentPage]);
 
   return (
     <>
       { loading ? 
         'Loading...' 
         : 
-        posts && <MasonryLayout posts={posts} />
-      }
+        posts.length > 0 ?
+          <>
+            <MasonryLayout posts={posts} />
+            <div className='flex justify-center pt-8'>
+              { currentPage !== meta?.totalPages 
+                && 
+                <Button 
+                  className='text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 disabled:cursor-not-allowed'
+                  btnText='Load More'
+                  loading={isLoadingButton}
+                  onClick={handleLoadMore}
+                /> }
+            </div>
+          </>
+          : 
+          <p className='text-center text-sm'>No Post Available</p> }
     </>
   );
 };
