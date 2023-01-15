@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MasonryLayout from './MasonryLayout';
 import axios from '../../config/AxiosClient';
-import { Button } from '../../components';
+import { Button, SkeletonPosts } from '../../components';
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
@@ -51,7 +51,7 @@ const Feed = () => {
   return (
     <>
       { loading ? 
-        'Loading...' 
+        <SkeletonPosts />
         : 
         posts.length > 0 ?
           <>
