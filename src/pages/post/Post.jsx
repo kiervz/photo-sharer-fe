@@ -1,0 +1,50 @@
+import React from 'react';
+import { BiDownvote, BiUpvote, BiCommentDetail } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+
+import UserIcon from '../../assets/images/user.png';
+
+const Post = ({ id, user, description, photo, total_votes, comments }) => {
+  return (
+    <div className='mt-2 mb-10'>
+      <div className='relative w-auto rounded-lg overflow-hidden transition-all duration-500 ease-in-out m-3'>
+        <div className='flex py-1 justify-start items-center gap-1'>
+          <img src={UserIcon} className='w-6 h-6 ml-1 object-cover rounded-full cursor-pointer' />
+          <p className='text-sm cursor-pointer font-semibold'>{ user.name }</p>
+        </div>
+        <Link to={`/post/${id}`}>
+          <LazyLoadImage 
+            className='rounded-lg w-full cursor-pointer' 
+            src={photo} 
+            alt='photo' 
+          />
+        </Link>
+        <div className='p-2'>
+          <div className='flex items-center text-center justify-between'>
+            <div className='flex justify-center gap-2 pt-3 pb-2 h-6 text-center items-center'>
+              <BiUpvote 
+                className='text-2xl cursor-pointer hover:text-red-500' 
+              />
+              <p className='text-lg font-semibold cursor-default'>{ total_votes }</p>
+              <BiDownvote 
+                className='text-2xl cursor-pointer hover:text-gray-500' 
+              />
+            </div>
+            <Link to={`/post/${id}`} className='flex items-center text-center justify-between gap-2 hover:text-blue-500'>
+              <p className='text-lg font-semibold'>{ comments.total }</p>
+              <BiCommentDetail 
+                className='text-2xl cursor-pointer'
+              />
+            </Link>
+          </div>
+        </div>
+        <div className='px-2 pb-2 text-sm gap-1'>
+          <p>{ description }</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Post;
