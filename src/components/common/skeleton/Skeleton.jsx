@@ -11,6 +11,12 @@ export const SkeletonPosts = () => {
         <Skeleton height={400} className='visible' />
         <Skeleton height={25} className='mt-3'/>
         <Skeleton height={25} />
+        <Skeleton height={25} className='mb-4' />
+      </div>
+      <div className='flex flex-col'>
+        <Skeleton height={400} className='visible' />
+        <Skeleton height={25} className='mt-3'/>
+        <Skeleton height={25} />
         <Skeleton height={25} />
       </div>
       <div className='flex flex-col'>
@@ -20,16 +26,34 @@ export const SkeletonPosts = () => {
         <Skeleton height={25} />
       </div>
       <div className='flex flex-col'>
-        <Skeleton height={400} className='invisible md:visible' />
-        <Skeleton height={25} className='invisible md:visible mt-3' />
-        <Skeleton height={25} className='invisible md:visible' />
-        <Skeleton height={25} className='invisible md:visible' />
+        <Skeleton height={400} className='visible' />
+        <Skeleton height={25} className='mt-3'/>
+        <Skeleton height={25} />
+        <Skeleton height={25} />
       </div>
       <div className='flex flex-col'>
-        <Skeleton height={400} className='invisible lg:visible' />
-        <Skeleton height={25} className='invisible lg:visible mt-3' />
-        <Skeleton height={25} className='invisible lg:visible' />
-        <Skeleton height={25} className='invisible lg:visible' />
+        <Skeleton height={400} className='visible' />
+        <Skeleton height={25} className='mt-3'/>
+        <Skeleton height={25} />
+        <Skeleton height={25} />
+      </div>
+      <div className='flex flex-col'>
+        <Skeleton height={400} className='visible' />
+        <Skeleton height={25} className='mt-3'/>
+        <Skeleton height={25} />
+        <Skeleton height={25} />
+      </div>
+      <div className='flex flex-col'>
+        <Skeleton height={400} className='visible' />
+        <Skeleton height={25} className='mt-3'/>
+        <Skeleton height={25} />
+        <Skeleton height={25} />
+      </div>
+      <div className='flex flex-col'>
+        <Skeleton height={400} className='visible' />
+        <Skeleton height={25} className='mt-3'/>
+        <Skeleton height={25} />
+        <Skeleton height={25} />
       </div>
     </div>
   );
