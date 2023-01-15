@@ -9,7 +9,7 @@ const Feed = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get('/api/v1/posts?sort=highest-votes&paginate=10');
+      const { data } = await axios.get('/api/v1/posts?sort=latest&paginate=10');
   
       setPosts(data.response.data);
     } catch (err) {

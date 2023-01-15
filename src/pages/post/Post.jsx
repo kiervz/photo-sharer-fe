@@ -2,13 +2,18 @@ import React from 'react';
 import { BiDownvote, BiUpvote, BiCommentDetail } from 'react-icons/bi';
 
 import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const Post = ({ id, description, photo, total_votes, comments }) => {
   return (
     <div className='mt-2 mb-10'>
       <div className='relative w-auto rounded-lg overflow-hidden transition-all duration-500 ease-in-out m-3'>
         <Link to={`/post/${id}`}>
-          <img className='rounded-lg w-full cursor-pointer' src={photo} alt='photo' />
+          <LazyLoadImage 
+            className='rounded-lg w-full cursor-pointer' 
+            src={photo} 
+            alt='photo' 
+          />
         </Link>
         <div className='p-2'>
           <div className='flex items-center text-center justify-between'>
