@@ -7,7 +7,7 @@ export const AuthPages = () => {
   const location = useLocation();
 
   return (
-    userState?.token != null
+    userState?.token === null
       ? <Outlet /> 
       : <Navigate to="/" state={{ from: location }} replace /> 
   );
