@@ -74,6 +74,23 @@ const PostDetail = () => {
       console.log(error);
     }
   };
+
+  const handleUpdateComment = async (id, text) => {
+    try {
+      await axios.put(`/api/v1/comments/${id}`, {
+        text: text
+      });
+      
+      setComments([
+        ...comments.map(comment => (
+          comment.id === id ? { ...comment, text} : comment
+        ))
+      ]);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
   
   useEffect(() => {
     fetchPost();
@@ -120,6 +137,8 @@ const PostDetail = () => {
               comments.map(comment => (
                 <CommentItem 
                   handleDeleteComment={handleDeleteComment}
+                  handleUpdateComment={handleUpdateComment}
+                  isLoadingComment={isLoadingComment}
                   key={comment.id} 
                   {...comment} 
                 /> 
