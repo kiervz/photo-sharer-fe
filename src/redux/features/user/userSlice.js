@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState =  {
   data: {},
-  token: '',
-  tokenType: ''
+  token: null,
+  tokenType: null
 };
 
 const reducers = {
