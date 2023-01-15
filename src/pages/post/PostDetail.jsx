@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { BiDownvote, BiUpvote } from 'react-icons/bi';
-import UserIcon from '../../assets/images/user.png';
 import axios from '../../config/AxiosClient';
-import CommentItem from './CommentItem';
-import { SkeletonPost } from '../../components';
-import Comment from './Comment';
+
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { SkeletonPost } from '../../components';
+import { BiDownvote, BiUpvote } from 'react-icons/bi';
+
+import UserIcon from '../../assets/images/user.png';
+import Comment from './Comment';
+import CommentItem from './CommentItem';
 
 const PostDetail = () => {
   const params = useParams();
@@ -57,6 +59,21 @@ const PostDetail = () => {
       setIsLoadingComment(false); 
     }
   };
+
+  const handleDeleteComment = async (id) => {
+    try {
+      await axios.delete(`/api/v1/comments/${id}`);
+
+      setComments([
+        ...comments.filter(comment => {
+          return comment.id !== id;
+        })
+      ]);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
   
   useEffect(() => {
     fetchPost();
@@ -102,6 +119,7 @@ const PostDetail = () => {
             { comments.length > 0 ?
               comments.map(comment => (
                 <CommentItem 
+                  handleDeleteComment={handleDeleteComment}
                   key={comment.id} 
                   {...comment} 
                 /> 
@@ -111,8 +129,7 @@ const PostDetail = () => {
                 No Comments Yet
               </p> }
           </div>
-        </div>
-      }
+        </div> }
     </>
   );
 };

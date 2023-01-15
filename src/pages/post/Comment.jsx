@@ -6,6 +6,7 @@ const Comment = ({ handleAddComment, isLoadingComment }) => {
 
   const hanldeComment = () => {
     handleAddComment(comment);
+    setComment('');
   };
 
   return (
