@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { BiDownvote, BiUpvote } from 'react-icons/bi';
-import UserIcon from '../../assets/images/user.png';
 import axios from '../../config/AxiosClient';
-import Comment from './Comment';
+
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { SkeletonPost } from '../../components';
+import { BiDownvote, BiUpvote } from 'react-icons/bi';
+
+import UserIcon from '../../assets/images/user.png';
+import Comment from './Comment';
+import CommentItem from './CommentItem';
 
 const PostDetail = () => {
   const params = useParams();
+  const userState = useSelector(state => state.user);
+
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
+  const [isLoadingComment, setIsLoadingComment] = useState(false);
 
   const fetchPost = async () => {
     setLoading(true);
@@ -17,6 +25,7 @@ const PostDetail = () => {
       const { data } = await axios.get(`/api/v1/posts/${params.id}`);
   
       setPost(data.response);
+      setComments(data.response.comments.data);
     } catch (err) {
       const error = err.response?.data?.message;
       console.log(error);
@@ -25,6 +34,64 @@ const PostDetail = () => {
     }
   };
 
+  const handleAddComment = async (comment) => {
+    try {
+      setIsLoadingComment(true);
+      const { data } = await axios.post('/api/v1/comments', {
+        post_id: post.id,
+        text: comment
+      });
+      
+      const newComment = data.response;
+
+      setComments([
+        ...comments, {
+          id: newComment.id,
+          post_id: newComment.post_id,
+          text: newComment.text,
+          user: {...newComment.user}
+        }
+      ]);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    } finally { 
+      setIsLoadingComment(false); 
+    }
+  };
+
+  const handleDeleteComment = async (id) => {
+    try {
+      await axios.delete(`/api/v1/comments/${id}`);
+
+      setComments([
+        ...comments.filter(comment => {
+          return comment.id !== id;
+        })
+      ]);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
+
+  const handleUpdateComment = async (id, text) => {
+    try {
+      await axios.put(`/api/v1/comments/${id}`, {
+        text: text
+      });
+      
+      setComments([
+        ...comments.map(comment => (
+          comment.id === id ? { ...comment, text} : comment
+        ))
+      ]);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+    }
+  };
+  
   useEffect(() => {
     fetchPost();
   }, []);
@@ -51,7 +118,7 @@ const PostDetail = () => {
             <div className='py-2 sm:py-5'>
               <p>{ post.description }</p>
             </div>
-            <div className='flex justify-end gap-2 pt-2 pb-2 h-6 text-center items-center'>
+            <div className={`flex justify-end gap-2 pt-2 pb-2 h-6 text-center items-center ${userState.token === '' && 'mb-10'}`}>
               <BiUpvote 
                 className='text-2xl cursor-pointer hover:text-red-500' 
               />
@@ -60,41 +127,28 @@ const PostDetail = () => {
                 className='text-2xl cursor-pointer hover:text-gray-500' 
               />
             </div>
-            <div className='mb-4'>
-              <label 
-                htmlFor="message" 
-                className="block mb-2 text-sm font-medium text-gray-900">
-                Your message
-              </label>
-              <textarea 
-                id="message" 
-                rows="3" 
-                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:border-blue-500" 
-                placeholder="Write your thoughts here...">
-              </textarea>
-              <button 
-                className='bg-blue-500 text-white py-1 px-2 rounded-lg text-sm mt-1'
-              >
-                Comment
-              </button>
-            </div>
+            { userState.token != '' &&
+              <Comment 
+                handleAddComment={handleAddComment}
+                isLoadingComment={isLoadingComment}
+              /> }
             <hr/>
-            { post.comments?.data.length > 0 ?
-              post.comments.data.map(comment => (
-                <Comment 
+            { comments.length > 0 ?
+              comments.map(comment => (
+                <CommentItem 
+                  handleDeleteComment={handleDeleteComment}
+                  handleUpdateComment={handleUpdateComment}
+                  isLoadingComment={isLoadingComment}
                   key={comment.id} 
                   {...comment} 
                 /> 
               ))
               :
-              <p 
-                className='text-center text-sm py-2'
-              >
+              <p className='text-center text-sm py-2'>
                 No Comments Yet
               </p> }
           </div>
-        </div>
-      }
+        </div> }
     </>
   );
 };
