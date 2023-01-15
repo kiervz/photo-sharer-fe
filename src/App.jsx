@@ -10,6 +10,7 @@ import PostDetail from './pages/post/PostDetail';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Missing from './pages/missing/Missing';
+import EditPost from './pages/post/EditPost';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           {/* Protect these routes  */}
           <Route element={<RequireAuth />}>
             <Route path='/create' element={<CreatePost />} />
+            <Route path='/post/:id/edit' element={<EditPost />} />
           </Route>    
 
           {/* catch all */}

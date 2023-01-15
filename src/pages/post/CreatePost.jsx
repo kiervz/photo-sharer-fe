@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import axiosClient from '../../config/AxiosClient';
-import { BiCloudUpload, BiTrash, BiRefresh, BiSave } from 'react-icons/bi';
+import { BiCloudUpload, BiTrash, BiRefresh } from 'react-icons/bi';
 import { Button, Input, PreviewImage } from '../../components';
 import { useFormik } from 'formik';
 import { initialValues, schema } from '../../validations/post';
@@ -143,8 +143,7 @@ const CreatePost = () => {
           <Button 
             type='submit'
             className="text-white bg-red-600 hover:bg-red-700 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
-            btnIcon={<BiSave className='text-xl mr-1'/>}
-            btnText='SAVE'
+            btnText='POST'
           />
         </div>
       </div>

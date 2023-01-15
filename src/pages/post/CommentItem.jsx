@@ -62,7 +62,7 @@ const CommentItem = ({
                         className="cursor-pointer px-4 py-2 text-black hover:bg-gray-100 flex gap-2 justify-start items-center"
                       > 
                         <HiOutlinePencilAlt size={20} />
-                        Update
+                        Edit
                       </p>
                     </li>
                     <li onClick={handleDelete}>
