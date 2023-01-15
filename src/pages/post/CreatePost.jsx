@@ -9,6 +9,7 @@ import { notifyUser } from '../../utility';
 
 const CreatePost = () => {
   const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { values, errors, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues,
@@ -45,6 +46,7 @@ const CreatePost = () => {
   };
   
   const handleSave = async (values) => {
+    setIsLoading(true);
     let formData = new FormData();
 
     formData.append('description', values.description);
@@ -61,7 +63,7 @@ const CreatePost = () => {
       const error = err.response?.data?.message;
       console.log(error);
       if (err.response.status === 401) notifyUser('error', 'Please login before making a post.');
-    }
+    } finally { setIsLoading(false); }
   };
   return (
     <form 
@@ -143,6 +145,7 @@ const CreatePost = () => {
           <Button 
             type='submit'
             className="text-white bg-red-600 hover:bg-red-700 border font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+            loading={isLoading}
             btnText='POST'
           />
         </div>
