@@ -15,7 +15,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { values, handleBlur, handleChange, handleSubmit } = useFormik({
+  const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: schema,
     onSubmit: (values) => {
@@ -67,12 +67,13 @@ const Login = () => {
               <Input 
                 id="email" 
                 type="email" 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                className={`${errors.email != null ? 'border-2 border-red-600': ''} bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`} 
                 placeholder="Your email address" 
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
+              { errors.email != null && <span className="text-xs tracking-wide text-red-600">{ errors.email }</span> } 
             </div>
             <div className="mb-6">
               <label 
@@ -84,12 +85,13 @@ const Login = () => {
               <Input 
                 id="password" 
                 type="password" 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                className={`${errors.password != null ? 'border-2 border-red-600': ''} bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`} 
                 placeholder="Your password" 
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
+              { errors.password != null && <span className="text-xs tracking-wide text-red-600">{ errors.password }</span> } 
             </div>
             <Button 
               type='submit'
