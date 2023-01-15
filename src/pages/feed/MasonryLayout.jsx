@@ -4,8 +4,8 @@ import Post from '../post/Post';
 
 const breakPointsObj = {
   default: 4,
-  1200: 3,
-  1000: 2,
+  1400: 3,
+  1100: 2,
   500: 1
 };
 
