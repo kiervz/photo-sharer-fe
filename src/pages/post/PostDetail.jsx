@@ -4,7 +4,13 @@ import axios from '../../config/AxiosClient';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { SkeletonPost } from '../../components';
-import { BiDownvote, BiUpvote } from 'react-icons/bi';
+import { notifyUser } from '../../utility/MessageHelper';
+import { 
+  BsHandThumbsDown, 
+  BsHandThumbsDownFill, 
+  BsHandThumbsUp, 
+  BsHandThumbsUpFill 
+} from 'react-icons/bs';
 
 import UserIcon from '../../assets/images/user.png';
 import Comment from './Comment';
@@ -18,6 +24,7 @@ const PostDetail = () => {
   const [post, setPost] = useState({});
   const [comments, setComments] = useState([]);
   const [isLoadingComment, setIsLoadingComment] = useState(false);
+  const [voteStatus, setVoteStatus] = useState(0);
 
   const fetchPost = async () => {
     setLoading(true);
@@ -93,6 +100,42 @@ const PostDetail = () => {
     }
   };
   
+  const voteUp = async () => {
+    try {
+      const { data } = await axios.post(`/api/v1/votes/${params.id}/up`);
+      const newPost = {...post, 
+        total_votes: data.response.total_votes
+      };
+
+      setPost(newPost);
+      setVoteStatus(data.response.status);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+      if (err.response.status === 401) {
+        notifyUser('error', 'Please login before voting.');
+      }
+    } 
+  };
+
+  const voteDown = async () => {
+    try {
+      const { data } = await axios.post(`/api/v1/votes/${params.id}/down`);
+      const newPost = {...post, 
+        total_votes: data.response.total_votes
+      };
+
+      setPost(newPost);
+      setVoteStatus(data.response.status);
+    } catch (err) {
+      const error = err.response?.data?.message;
+      console.log(error);
+      if (err.response.status === 401) {
+        notifyUser('error', 'Please login before voting.');
+      }
+    } 
+  };
+  
   useEffect(() => {
     fetchPost();
   }, []);
@@ -120,13 +163,27 @@ const PostDetail = () => {
               <p>{ post.description }</p>
             </div>
             <div className={`flex justify-end gap-2 pt-2 pb-2 h-6 text-center items-center ${userState.token === '' && 'mb-10'}`}>
-              <BiUpvote 
-                className='text-2xl cursor-pointer hover:text-red-500' 
-              />
+              { voteStatus === 1 ?
+                <BsHandThumbsUpFill 
+                  color={voteStatus === 1 ? 'red' : ''}
+                  className='text-2xl cursor-pointer'
+                  onClick={voteUp}
+                /> : 
+                <BsHandThumbsUp 
+                  className='text-2xl cursor-pointer hover:text-red-500'
+                  onClick={voteUp}
+                /> }
               <p className='text-lg font-semibold cursor-default'>{ post.total_votes }</p>
-              <BiDownvote 
-                className='text-2xl cursor-pointer hover:text-gray-500' 
-              />
+
+              { voteStatus === -1 ?
+                <BsHandThumbsDownFill 
+                  className={`text-2xl cursor-pointer ${voteStatus === -1 ? 'text-blue-500' : ''}`}
+                  onClick={voteDown}
+                /> : 
+                <BsHandThumbsDown 
+                  className='text-2xl cursor-pointer hover:text-blue-500'
+                  onClick={voteDown}
+                /> }
             </div>
             { userState.token != '' &&
               <Comment 
