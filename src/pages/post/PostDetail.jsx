@@ -13,8 +13,9 @@ import {
 } from 'react-icons/bs';
 
 import UserIcon from '../../assets/images/user.png';
-import Comment from './Comment';
-import CommentItem from './CommentItem';
+
+const Comment = React.lazy(() => import('./Comment'));
+const CommentItem = React.lazy(() => import('./CommentItem'));
 
 const PostDetail = () => {
   const params = useParams();
