@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import MasonryLayout from './MasonryLayout';
 import axios from '../../config/AxiosClient';
 import { Button, SkeletonPosts } from '../../components';
+const SortBy = React.lazy(() => import('./SortBy'));
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
   const [meta, setMeta] = useState();
+  const [sort, setSort] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [fromLoadMore, setFromLoadMore] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,7 +19,7 @@ const Feed = () => {
     }
 
     try {
-      const { data } = await axios.get(`/api/v1/posts?page=${currentPage}&sort=latest&paginate=10`);
+      const { data } = await axios.get(`/api/v1/posts?page=${currentPage}&sort=${sort}&paginate=10`);
   
       if (fromLoadMore) {
         setPosts(prev => [...prev, ...data.response.data]);
@@ -66,10 +68,12 @@ const Feed = () => {
       ))
     ]);
   };
+
+  const handleSelectedSort = (sort) => setSort(sort);
   
   useEffect(() => {
     fetchPosts();
-  }, [currentPage]);
+  }, [currentPage, sort]);
 
   return (
     <>
@@ -78,6 +82,9 @@ const Feed = () => {
         : 
         posts.length > 0 ?
           <>
+            <SortBy 
+              handleSelectedSort={handleSelectedSort}
+            />
             <MasonryLayout 
               posts={posts} 
               handleDelete={handleDelete}
