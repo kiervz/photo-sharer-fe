@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png'];
-const FILE_SIZE = 2_000_000;
+const FILE_SIZE = 2_048_000;
 
 export const schema = yup.object({
   description: yup.string().required('Please generate the cat fact.'),
