@@ -1,6 +1,7 @@
 import React from 'react';
 import Masonry from 'react-masonry-css';
-import Post from '../post/Post';
+
+const Post = React.lazy(() => import('../post/Post'));
 
 const breakPointsObj = {
   default: 4,
