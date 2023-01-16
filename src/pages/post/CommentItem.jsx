@@ -22,11 +22,15 @@ const CommentItem = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [comment, setComment] = useState(text);
+  const [error, setError] = useState('');
   const userState = useSelector(state => state.user);
   
   const handleDelete = () => handleDeleteComment(id);
 
   const hanldeComment = () => {
+    if (comment?.length > 500) {
+      return setError('The comment must not be greater than 500 characters.');
+    }
     handleUpdateComment(id, comment);
     setIsOpenModal(false);
   };
@@ -97,12 +101,13 @@ const CommentItem = ({
                     <textarea 
                       id="updateMessage" 
                       rows="3" 
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:border-blue-500" 
+                      className={`${error?.length > 0 ? 'border-red-600' : 'border-gray-300'} block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border focus:border-blue-500`}
                       placeholder="Write your thoughts here..."
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                     >
                     </textarea>
+                    { error?.length > 0 && <span className="text-xs tracking-wide text-red-600">{ error }</span> } 
                     <div className='text-right'>
                       <Button 
                         className='text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 rounded-lg text-sm px-5 py-2 my-2 disabled:bg-gray-100 disabled:cursor-not-allowed'

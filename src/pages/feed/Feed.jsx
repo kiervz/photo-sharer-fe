@@ -72,26 +72,25 @@ const Feed = () => {
   const handleSelectedSort = (sort) => setSort(sort);
   
   useEffect(() => {
-    fetchPosts();
+    if (sort) fetchPosts();
   }, [currentPage, sort]);
 
   return (
     <>
-      { loading ? 
-        <SkeletonPosts />
-        : 
-        posts.length > 0 ?
-          <>
-            <SortBy 
-              handleSelectedSort={handleSelectedSort}
-            />
-            <MasonryLayout 
-              posts={posts} 
-              handleDelete={handleDelete}
-              handleTotalVotes={handleTotalVotes}
-            />
-            <div className='flex justify-center pt-8'>
-              { currentPage !== meta?.totalPages 
+      <SortBy 
+        handleSelectedSort={handleSelectedSort}
+        className='mb-4'
+      />
+      { loading && <SkeletonPosts /> }
+      { posts.length > 0 ?
+        <>
+          <MasonryLayout 
+            posts={posts} 
+            handleDelete={handleDelete}
+            handleTotalVotes={handleTotalVotes}
+          />
+          <div className='flex justify-center pt-8'>
+            { currentPage !== meta?.totalPages 
                 && 
                 <Button 
                   className='text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 disabled:cursor-not-allowed'
@@ -99,10 +98,10 @@ const Feed = () => {
                   loading={isLoadingButton}
                   onClick={handleLoadMore}
                 /> }
-            </div>
-          </>
-          : 
-          <p className='text-center text-sm'>No Post Available</p> }
+          </div>
+        </>
+        : 
+        <p className='text-center text-sm'>No Post Available</p> }
     </>
   );
 };
