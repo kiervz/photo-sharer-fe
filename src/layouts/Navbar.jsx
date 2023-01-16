@@ -47,7 +47,7 @@ const Navbar = () => {
           </Link> }
           <li className='cursor-pointer relative' ref={userIconRef}>
             <img 
-              className='w-10 h-10 object-cover rounded-full border-2 focus:border-slate-900 '
+              className='w-10 h-10 object-cover rounded-full focus:border-slate-900 '
               src={UserIcon} 
               onClick={() => setIsOpen(!isOpen)}
               alt='user icon'
