@@ -65,3 +65,9 @@ Run it
 ```bash
 $ npm run dev # or yarn run dev
 ```
+
+Demo credentials
+```bash
+Email: johndoe@test.com
+Password: password
+```
