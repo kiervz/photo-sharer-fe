@@ -7,12 +7,8 @@ export const RequireAuth = () => {
   const location = useLocation();
 
   return (
-    userState?.token === null
-      ? 
-      location.pathname === '/' ? 
-        <Navigate to="/login" state={{ from: location }} replace /> 
-        : 
-        <Navigate to="/unauthorized" state={{ from: location }} replace />
+    userState?.token === null ? 
+      <Navigate to="/" state={{ from: location }} replace />
       : <Outlet />
   );
 };
