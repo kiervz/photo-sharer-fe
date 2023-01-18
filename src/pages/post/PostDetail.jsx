@@ -151,7 +151,7 @@ const PostDetail = () => {
           <div className="w-full sm:w-[508px] max-w-full">
             <img 
               src={post.photo} 
-              className='object-cover rounded-lg' 
+              className='object-cover sm:rounded-lg' 
             />
           </div>
           <div className='sticky top-0 p-2 sm:p-5 w-full sm:w-[508px]'>
@@ -164,7 +164,7 @@ const PostDetail = () => {
             <div className='py-2 sm:py-5'>
               <p>{ post.description }</p>
             </div>
-            <div className={`flex justify-end gap-2 pt-2 pb-2 h-6 text-center items-center ${userState.token === '' && 'mb-10'}`}>
+            <div className={`flex justify-end gap-2 pt-2 pb-2 h-6 text-center items-center ${userState.token === null && 'mb-10'}`}>
               { voteStatus === 1 ?
                 <BsHandThumbsUpFill 
                   color={voteStatus === 1 ? 'red' : ''}
@@ -187,12 +187,12 @@ const PostDetail = () => {
                   onClick={voteDown}
                 /> }
             </div>
-            { userState.token != '' &&
+            { userState.token != null &&
               <Comment 
                 handleAddComment={handleAddComment}
                 isLoadingComment={isLoadingComment}
               /> }
-            <hr/>
+            <hr />
             { comments.length > 0 ?
               comments.map(comment => (
                 <CommentItem 
