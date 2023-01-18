@@ -26,12 +26,12 @@ const App = () => {
               <Route path='/login' element={<Login />} />
               <Route path='/register' element={<Register />} />
             </Route>
+            <Route path='/' element={<Feed />} />
             <Route path='/logout' element={<Logout />} />
             <Route path='/post/:id' element={<PostDetail />} />
 
             {/* Protect these routes  */}
             <Route element={<RequireAuth />}>
-              <Route path='/' element={<Feed />} />
               <Route path='/create' element={<CreatePost />} />
               <Route path='/post/:id/edit' element={<EditPost />} />
             </Route>    
